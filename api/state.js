@@ -1,7 +1,7 @@
 import { list, put } from '@vercel/blob';
 
 const PATHNAME = 'webteam-hospital-labels.json';
-const LABEL_IDS = new Set(['maintenance', 'webonly', 'unknown', 'transfer', 'nonproduction']);
+const LABEL_IDS = new Set(['maintenance', 'webonly', 'unknown', 'transfer', 'nonproduction', 'contractended']);
 
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
