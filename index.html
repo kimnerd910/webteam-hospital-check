@@ -59,8 +59,7 @@
     try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); } catch(e) { saved = {}; }
     HOSPITALS.forEach(name => { if (!LABELS.some(l => l.id === saved[name])) saved[name] = "unknown"; });
     let activeTab = "all", sorted = false;
-
-    <!-- deployment refresh -->const listEl=document.getElementById("list"), tabsEl=document.getElementById("tabs"), summaryEl=document.getElementById("summary"), searchEl=document.getElementById("search"), saveState=document.getElementById("saveState");
+const listEl=document.getElementById("list"), tabsEl=document.getElementById("tabs"), summaryEl=document.getElementById("summary"), searchEl=document.getElementById("search"), saveState=document.getElementById("saveState");
     const labelById=id=>LABELS.find(l=>l.id===id) || LABELS[2];
     let saveTimer;
     function persist(){
