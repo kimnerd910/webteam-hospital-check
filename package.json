@@ -1,0 +1,9 @@
+{
+  "name": "webteam-hospital-check",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "@vercel/blob": "latest"
+  }
+}
