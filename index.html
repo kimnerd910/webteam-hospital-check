@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>웹팀 병원 더블체크</title>
+  <style>
+    :root{--bg:#f4f6f8;--panel:#fff;--line:#dfe4ea;--text:#17202a;--muted:#697586;--primary:#1f5eff;--shadow:0 10px 30px rgba(19,33,68,.08)}
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:Pretendard,"Noto Sans KR",system-ui,-apple-system,sans-serif}
+    button,input,select{font:inherit} button{cursor:pointer}
+    .wrap{width:min(1180px,calc(100% - 32px));margin:36px auto 80px}
+    header{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:22px}
+    h1{margin:0 0 8px;font-size:clamp(25px,4vw,38px);letter-spacing:-.04em} .sub{margin:0;color:var(--muted);font-size:14px}
+    .save-state{display:flex;align-items:center;gap:8px;color:#18794e;font-weight:700;font-size:13px}.save-state:before{content:"";width:8px;height:8px;border-radius:50%;background:#20a464}
+    .toolbar{position:sticky;top:0;z-index:10;background:rgba(244,246,248,.94);backdrop-filter:blur(12px);padding:12px 0 16px}
+    .tools{display:grid;grid-template-columns:minmax(220px,1fr) auto;gap:10px;margin-bottom:12px}
+    .search{width:100%;height:48px;border:1px solid var(--line);border-radius:12px;padding:0 16px;background:#fff;outline:none}.search:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(31,94,255,.12)}
+    .sort-btn{border:0;border-radius:12px;padding:0 18px;background:#17202a;color:#fff;font-weight:800}.sort-btn:hover{background:#2d3a48}
+    .tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px}.tab{white-space:nowrap;border:1px solid var(--line);border-radius:999px;background:#fff;color:#485568;padding:9px 14px;font-weight:750}.tab.active{background:#17202a;border-color:#17202a;color:#fff}
+    .summary{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:18px 0}.summary-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px}.summary-card span{display:block;color:var(--muted);font-size:12px;margin-bottom:7px}.summary-card strong{font-size:23px}
+    .list{display:grid;gap:10px}.row{display:grid;grid-template-columns:52px minmax(220px,1fr) minmax(330px,auto);align-items:center;gap:16px;background:var(--panel);border:1px solid var(--line);border-left:5px solid var(--label-color,#aeb7c2);border-radius:14px;padding:14px 16px;box-shadow:0 3px 12px rgba(19,33,68,.035)}
+    .no{color:#96a0ad;font-size:13px;font-variant-numeric:tabular-nums}.name{font-weight:850;letter-spacing:-.02em}.labels{display:flex;justify-content:flex-end;gap:6px;flex-wrap:wrap}
+    .label-btn{border:1px solid var(--line);border-radius:9px;padding:7px 9px;background:#f8fafb;color:#566272;font-size:12px;font-weight:750}.label-btn:hover{border-color:#9ca8b6}.label-btn.active{color:#fff;background:var(--label-color);border-color:var(--label-color)}
+    .empty{text-align:center;padding:70px 20px;color:var(--muted);background:#fff;border:1px dashed var(--line);border-radius:16px}.foot{margin-top:18px;color:var(--muted);font-size:12px;text-align:right}
+    @media(max-width:800px){.wrap{width:min(100% - 20px,1180px);margin-top:22px}header{align-items:flex-start;flex-direction:column}.tools{grid-template-columns:1fr}.sort-btn{height:46px}.summary{grid-template-columns:repeat(2,1fr)}.row{grid-template-columns:36px 1fr;gap:8px 10px}.labels{grid-column:1/-1;justify-content:flex-start;padding-top:6px}.label-btn{flex:1;min-width:92px}.foot{text-align:left}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <div><h1>웹팀 병원 더블체크</h1><p class="sub">중복 및 괄호 문구를 제거한 병원 목록 · 모든 접속자에게 같은 상태로 자동 저장</p></div>
+      <div class="save-state" id="saveState">서버 연결 중…</div>
+    </header>
+    <section class="toolbar">
+      <div class="tools">
+        <input class="search" id="search" type="search" placeholder="병원명 검색">
+        <button class="sort-btn" id="sortBtn" type="button">라벨별로 새로 정렬하기</button>
+      </div>
+      <nav class="tabs" id="tabs" aria-label="라벨별 보기"></nav>
+    </section>
+    <section class="summary" id="summary"></section>
+    <section class="list" id="list"></section>
+    <p class="foot">라벨 변경 내용은 공유 저장소에 자동 반영됩니다.</p>
+  </main>
+  <script>
+    const HOSPITALS = [
+      "365서울트윈치과","365고양제일치과의원","연세이루다치과","서울단단치과 2차","서울상록수치과","다인아트치과의원","청주더좋은치과","트루치과","연세바른치과","산본중심치과","진심을다하는치과","서울다온치과의원","금천연세세브란스치과","킹덤치과 리뉴얼","나란이턱치과","연세스탠다드치과 구월점","굿플란트 리뉴얼","트리움치과 주의사항","서울권치과","덴탈인사이트","썬프라자치과","시흥스마트치과","퍼스트탑치과","시카고치과 리뉴얼","유어스리뉴얼사이트","트리움치과 리뉴얼","서울안정치과","연세바로교정치과 이수","라온누리치과","바른선택치과의원","충주본365치과의원","서울스마트치과의원","서울더탑치과 리뉴얼","바른공감치과 만수점","연세바로교정치과 안양","삼성프라임치과","디어스마일치과","예담스마트치과의원","잇몸미학치주과치과","리얼비즈","연세바로교정치과 세종","마음담은치과의원","양평백상치과","빛가람플란트치과의원","미담은치과의원","파주 연세세브란스치과의원","서울온건치과의원","유어스치과의원","연세탑치과의원","연세꿈꾸는치과교정과의원","맘편한유치과의원","병점연세세브란스치과의원","서울든든치과의원","서울오래치과","서울우이치과","서울보스톤치과의원","연세맘편한치과","마니55플란트치과의원","서울곧은치과의원","365이룩치과","연세스탠다드치과의원 의정부","치아살리는치과의원","상상플란트치과의원","365베스트치과","서울파트너치과의원 부천","연세365감동치과의원","서울명치과의원 구로","채움과이음치과의원","정다운플란트치과","서울천사치과","서울이랑드치과","서울바름치과의원","서울미드림치과의원","미소봄치과의원","송림푸른하늘치과","서울바른수치과","강남사랑니치과의원","위드미치과의원 평택","리온치과의원","아이콘치과교정과의원 목동","하얀고운치과의원","서창신세계치과의원","연세세브란스치과의원 봉천","서울마인드치과","이심당치과","더신중한치과","이미인교정치과","안녕하유치과","연세다온치과","서울더공감치과","서울이도치과","파주올바로치과","메디템플릿","연세푸르다치과","오남플란트치과","창원베스트플란트","바른턱명인치과","연세참다운치과","진심스마트치과","메디앤메디스케쥴","케이플란트치과","연세꿈꾸는치과","더케이365치과","당신의치과","키즈앤패밀리치과 리뉴얼","365편한일층치과"
+    ];
+    const LABELS = [
+      {id:"maintenance",name:"유지보수중",color:"#16865b"},
+      {id:"webonly",name:"웹단독",color:"#246bfd"},
+      {id:"unknown",name:"알수없음",color:"#8793a3"},
+      {id:"transfer",name:"이관처리",color:"#ee8a19"},
+      {id:"nonproduction",name:"비제작",color:"#d94d5c"}
+    ];
+    const STORAGE_KEY = "webteam-hospital-doublecheck-v1";
+    let saved = {};
+    try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); } catch(e) { saved = {}; }
+    HOSPITALS.forEach(name => { if (!LABELS.some(l => l.id === saved[name])) saved[name] = "unknown"; });
+    let activeTab = "all", sorted = false;
+    const listEl=document.getElementById("list"), tabsEl=document.getElementById("tabs"), summaryEl=document.getElementById("summary"), searchEl=document.getElementById("search"), saveState=document.getElementById("saveState");
+    const labelById=id=>LABELS.find(l=>l.id===id) || LABELS[2];
+    let saveTimer;
+    function persist(){
+      localStorage.setItem(STORAGE_KEY,JSON.stringify(saved));
+      saveState.textContent="저장 중…";
+      clearTimeout(saveTimer);
+      saveTimer=setTimeout(async()=>{
+        try{
+          const res=await fetch("/api/state",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({labels:saved})});
+          if(!res.ok) throw new Error("save failed");
+          saveState.textContent="공유 저장됨";
+        }catch(e){ saveState.textContent="저장 실패 · 다시 선택해주세요"; }
+      },250);
+    }
+    function counts(){ return Object.fromEntries(LABELS.map(l=>[l.id,HOSPITALS.filter(n=>saved[n]===l.id).length])); }
+    function renderTabs(){ const c=counts(); tabsEl.innerHTML=[{id:"all",name:"전체",count:HOSPITALS.length},...LABELS.map(l=>({...l,count:c[l.id]}))].map(t=>`<button class="tab ${activeTab===t.id?'active':''}" data-tab="${t.id}">${t.name} <b>${t.count}</b></button>`).join(""); }
+    function renderSummary(){ const c=counts(); summaryEl.innerHTML=LABELS.map(l=>`<div class="summary-card" style="border-top:4px solid ${l.color}"><span>${l.name}</span><strong>${c[l.id]}</strong></div>`).join(""); }
+    function renderList(){
+      const q=searchEl.value.trim().toLowerCase(); let names=HOSPITALS.filter(n=>(activeTab==="all"||saved[n]===activeTab)&&n.toLowerCase().includes(q));
+      if(sorted) names.sort((a,b)=>LABELS.findIndex(l=>l.id===saved[a])-LABELS.findIndex(l=>l.id===saved[b]) || a.localeCompare(b,"ko"));
+      else names.sort((a,b)=>a.localeCompare(b,"ko"));
+      listEl.innerHTML=names.length?names.map((name,i)=>{const current=labelById(saved[name]);return `<article class="row" style="--label-color:${current.color}"><span class="no">${String(i+1).padStart(3,"0")}</span><span class="name">${name}</span><div class="labels">${LABELS.map(l=>`<button type="button" class="label-btn ${saved[name]===l.id?'active':''}" style="--label-color:${l.color}" data-name="${name}" data-label="${l.id}">${l.name}</button>`).join("")}</div></article>`}).join(""):`<div class="empty">해당하는 병원이 없습니다.</div>`;
+    }
+    function render(){renderTabs();renderSummary();renderList();}
+    tabsEl.addEventListener("click",e=>{const b=e.target.closest("[data-tab]");if(!b)return;activeTab=b.dataset.tab;render();});
+    listEl.addEventListener("click",e=>{const b=e.target.closest("[data-label]");if(!b)return;saved[b.dataset.name]=b.dataset.label;persist();render();});
+    searchEl.addEventListener("input",renderList);
+    document.getElementById("sortBtn").addEventListener("click",()=>{sorted=true;activeTab="all";render();document.getElementById("list").scrollIntoView({behavior:"smooth",block:"start"});});
+    async function init(){
+      try{
+        const res=await fetch("/api/state",{cache:"no-store"});
+        if(res.ok){
+          const data=await res.json();
+          if(data.labels && typeof data.labels==="object") saved={...saved,...data.labels};
+        }
+        saveState.textContent="공유 저장됨";
+      }catch(e){ saveState.textContent="서버 연결 실패 · 로컬 저장 모드"; }
+      HOSPITALS.forEach(name=>{if(!LABELS.some(l=>l.id===saved[name]))saved[name]="unknown";});
+      localStorage.setItem(STORAGE_KEY,JSON.stringify(saved));
+      render();
+    }
+    init();
+  </script>
+</body>
+</html>
