@@ -17,7 +17,7 @@
     .search{width:100%;height:48px;border:1px solid var(--line);border-radius:12px;padding:0 16px;background:#fff;outline:none}.search:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(31,94,255,.12)}
     .sort-btn{border:0;border-radius:12px;padding:0 18px;background:#17202a;color:#fff;font-weight:800}.sort-btn:hover{background:#2d3a48}
     .tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px}.tab{white-space:nowrap;border:1px solid var(--line);border-radius:999px;background:#fff;color:#485568;padding:9px 14px;font-weight:750}.tab.active{background:#17202a;border-color:#17202a;color:#fff}
-    .summary{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:18px 0}.summary-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px}.summary-card span{display:block;color:var(--muted);font-size:12px;margin-bottom:7px}.summary-card strong{font-size:23px}
+    .summary{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin:18px 0}.summary-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px}.summary-card span{display:block;color:var(--muted);font-size:12px;margin-bottom:7px}.summary-card strong{font-size:23px}
     .list{display:grid;gap:10px}.row{display:grid;grid-template-columns:52px minmax(220px,1fr) minmax(330px,auto);align-items:center;gap:16px;background:var(--panel);border:1px solid var(--line);border-left:5px solid var(--label-color,#aeb7c2);border-radius:14px;padding:14px 16px;box-shadow:0 3px 12px rgba(19,33,68,.035)}
     .no{color:#96a0ad;font-size:13px;font-variant-numeric:tabular-nums}.name{font-weight:850;letter-spacing:-.02em}.labels{display:flex;justify-content:flex-end;gap:6px;flex-wrap:wrap}
     .label-btn{border:1px solid var(--line);border-radius:9px;padding:7px 9px;background:#f8fafb;color:#566272;font-size:12px;font-weight:750}.label-btn:hover{border-color:#9ca8b6}.label-btn.active{color:#fff;background:var(--label-color);border-color:var(--label-color)}
@@ -44,14 +44,15 @@
   </main>
   <script>
     const HOSPITALS = [
-      "365서울트윈치과","365고양제일치과의원","연세이루다치과","서울단단치과 2차","서울상록수치과","다인아트치과의원","청주더좋은치과","트루치과","연세바른치과","산본중심치과","진심을다하는치과","서울다온치과의원","금천연세세브란스치과","킹덤치과 리뉴얼","나란이턱치과","연세스탠다드치과 구월점","굿플란트 리뉴얼","트리움치과 주의사항","서울권치과","덴탈인사이트","썬프라자치과","시흥스마트치과","퍼스트탑치과","시카고치과 리뉴얼","유어스리뉴얼사이트","트리움치과 리뉴얼","서울안정치과","연세바로교정치과 이수","라온누리치과","바른선택치과의원","충주본365치과의원","서울스마트치과의원","서울더탑치과 리뉴얼","바른공감치과 만수점","연세바로교정치과 안양","삼성프라임치과","디어스마일치과","예담스마트치과의원","잇몸미학치주과치과","리얼비즈","연세바로교정치과 세종","마음담은치과의원","양평백상치과","빛가람플란트치과의원","미담은치과의원","파주 연세세브란스치과의원","서울온건치과의원","유어스치과의원","연세탑치과의원","연세꿈꾸는치과교정과의원","맘편한유치과의원","병점연세세브란스치과의원","서울든든치과의원","서울오래치과","서울우이치과","서울보스톤치과의원","연세맘편한치과","마니55플란트치과의원","서울곧은치과의원","365이룩치과","연세스탠다드치과의원 의정부","치아살리는치과의원","상상플란트치과의원","365베스트치과","서울파트너치과의원 부천","연세365감동치과의원","서울명치과의원 구로","채움과이음치과의원","정다운플란트치과","서울천사치과","서울이랑드치과","서울바름치과의원","서울미드림치과의원","미소봄치과의원","송림푸른하늘치과","서울바른수치과","강남사랑니치과의원","위드미치과의원 평택","리온치과의원","아이콘치과교정과의원 목동","하얀고운치과의원","서창신세계치과의원","연세세브란스치과의원 봉천","서울마인드치과","이심당치과","더신중한치과","이미인교정치과","안녕하유치과","연세다온치과","서울더공감치과","서울이도치과","파주올바로치과","메디템플릿","연세푸르다치과","오남플란트치과","창원베스트플란트","바른턱명인치과","연세참다운치과","진심스마트치과","메디앤메디스케쥴","케이플란트치과","연세꿈꾸는치과","더케이365치과","당신의치과","키즈앤패밀리치과 리뉴얼","365편한일층치과"
+      "365서울트윈치과","365고양제일치과의원","연세이루다치과","서울단단치과 2차","서울상록수치과","다인아트치과의원","청주더좋은치과","트루치과","연세바른치과","산본중심치과","진심을다하는치과","서울다온치과의원","금천연세세브란스치과","킹덤치과 리뉴얼","나란이턱치과","연세스탠다드치과 구월점","굿플란트 리뉴얼","트리움치과 주의사항","서울권치과","썬프라자치과","시흥스마트치과","퍼스트탑치과","시카고치과 리뉴얼","트리움치과 리뉴얼","서울안정치과","연세바로교정치과 이수","라온누리치과","바른선택치과의원","충주본365치과의원","서울스마트치과의원","서울더탑치과 리뉴얼","바른공감치과 만수점","연세바로교정치과 안양","삼성프라임치과","디어스마일치과","예담스마트치과의원","잇몸미학치주과치과","연세바로교정치과 세종","마음담은치과의원","양평백상치과","빛가람플란트치과의원","미담은치과의원","파주 연세세브란스치과의원","서울온건치과의원","유어스치과의원","연세탑치과의원","연세꿈꾸는치과교정과의원","맘편한유치과의원","병점연세세브란스치과의원","서울든든치과의원","서울오래치과","서울우이치과","서울보스톤치과의원","연세맘편한치과","마니55플란트치과의원","서울곧은치과의원","365이룩치과","연세스탠다드치과의원 의정부","치아살리는치과의원","상상플란트치과의원","365베스트치과","서울파트너치과의원 부천","연세365감동치과의원","서울명치과의원 구로","채움과이음치과의원","정다운플란트치과","서울천사치과","서울이랑드치과","서울바름치과의원","서울미드림치과의원","미소봄치과의원","송림푸른하늘치과","서울바른수치과","강남사랑니치과의원","위드미치과의원 평택","리온치과의원","아이콘치과교정과의원 목동","하얀고운치과의원","서창신세계치과의원","연세세브란스치과의원 봉천","서울마인드치과","이심당치과","더신중한치과","이미인교정치과","안녕하유치과","연세다온치과","서울더공감치과","서울이도치과","파주올바로치과","연세푸르다치과","오남플란트치과","창원베스트플란트","바른턱명인치과","연세참다운치과","진심스마트치과","케이플란트치과","연세꿈꾸는치과","더케이365치과","당신의치과","키즈앤패밀리치과 리뉴얼","365편한일층치과"
     ];
     const LABELS = [
       {id:"maintenance",name:"유지보수중",color:"#16865b"},
       {id:"webonly",name:"웹단독",color:"#246bfd"},
       {id:"unknown",name:"알수없음",color:"#8793a3"},
       {id:"transfer",name:"이관처리",color:"#ee8a19"},
-      {id:"nonproduction",name:"비제작",color:"#d94d5c"}
+      {id:"nonproduction",name:"비제작",color:"#d94d5c"},
+      {id:"contractended",name:"계약종료",color:"#6f4cc3"}
     ];
     const STORAGE_KEY = "webteam-hospital-doublecheck-v1";
     let saved = {};
